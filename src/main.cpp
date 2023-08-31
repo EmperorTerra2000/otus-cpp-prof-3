@@ -1,6 +1,8 @@
 #include <map>
 #include <algorithm>
 
+#include "containerList.hpp"
+
 #include "custom_allocator.hpp"
 
 int calc_factorial(int num)
@@ -10,15 +12,6 @@ int calc_factorial(int num)
     accum *= i;
   return accum;
 }
-
-template <typename T>
-void setElements(T &arr, int size)
-{
-  for (int i{}; i < size; i++)
-  {
-    arr.insert({i, calc_factorial(i)});
-  }
-};
 
 template <typename T>
 void showElements(T &arr)
@@ -35,7 +28,10 @@ int main()
 {
   std::map<int, int> map_std_alloc;
 
-  setElements(map_std_alloc, 10);
+  for (int i{}; i < 10; i++)
+  {
+    map_std_alloc.insert({i, calc_factorial(i)});
+  }
 
   std::map<int,
            int,
@@ -43,8 +39,30 @@ int main()
            custom_allocator<std::pair<int, int>>>
       map_custom_alloc;
 
-  setElements(map_custom_alloc, 10);
+  for (int i{}; i < 10; i++)
+  {
+    map_custom_alloc.insert({i, calc_factorial(i)});
+  }
+
   showElements(map_custom_alloc);
+
+  ContainerList<int> custom_list{};
+
+  for (size_t i = 0; i < 10; ++i)
+  {
+    custom_list.push_back(i);
+  }
+
+  ContainerList<int, custom_allocator<int>> custom_list_alloc{};
+
+  for (size_t i = 0; i < 10; ++i)
+  {
+    custom_list_alloc.push_back(i);
+
+    std::cout << custom_list_alloc[i] << " ";
+  }
+
+  std::cout << std::endl;
 
   return 0;
 }

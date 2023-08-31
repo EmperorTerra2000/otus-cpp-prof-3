@@ -12,20 +12,11 @@ public:
   using reference = T &;
   using const_reference = const T &;
 
-  custom_allocator()
-  {
-    data = reinterpret_cast<T *>(std::malloc(DEFAULT_SIZE * sizeof(T)));
-
-    if (data == nullptr)
-    {
-      std::cout << "exception: bad alloc (data = nullptr)";
-      throw std::bad_alloc();
-    }
-  };
+  custom_allocator() = default;
 
   ~custom_allocator()
   {
-    delete data;
+    std::free(data);
   };
 
   template <typename U>
@@ -36,6 +27,11 @@ public:
 
   T *allocate(std::size_t n)
   {
+    if (data == nullptr)
+    {
+      data = reinterpret_cast<T *>(std::malloc(DEFAULT_SIZE * sizeof(T)));
+    }
+
     if (memory_pool + n > DEFAULT_SIZE)
     {
       std::cout << "exception: bad alloc " << memory_pool << std::endl;
@@ -46,6 +42,12 @@ public:
 
     return data + (memory_pool - n);
   };
+
+  template <typename... Args>
+  void construct(T *p, Args &&...args)
+  {
+    new (p) T(std::forward<Args>(args)...);
+  }
 
   void deallocate(T *ptr, std::size_t size)
   {

@@ -6,24 +6,26 @@ project(alloc VERSION ${PROJECT_VESRION})
 
 set(CMAKE_BUILD_TYPE Debug)
 
-add_executable(main main.cpp custom_allocator.hpp)
+add_executable(alloc src/main.cpp)
 
-set_target_properties(main PROPERTIES
+target_include_directories(alloc PRIVATE include)
+
+set_target_properties(alloc PROPERTIES
   CXX_STANDARD 14
   CXX_STANDARD_REQUIRED ON
 )
 
 if (MSVC)
-    target_compile_options(main PRIVATE
+    target_compile_options(alloc PRIVATE
         /W4
     )
 else ()
-    target_compile_options(main PRIVATE
+    target_compile_options(alloc PRIVATE
         -Wall -Wextra -pedantic
     )
 endif()
 
-install(TARGETS main RUNTIME DESTINATION bin)
+install(TARGETS alloc RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
