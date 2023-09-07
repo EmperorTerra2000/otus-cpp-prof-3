@@ -8,13 +8,6 @@ struct Node
   T data;
   Node<T> *next;
   Node<T> *prev;
-
-  ~Node()
-  {
-    std::cout << "Node destructor " << data << std::endl;
-
-    // delete next;
-  }
 };
 
 template <class T, class Allocator = std::allocator<T>>
